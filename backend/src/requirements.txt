@@ -1,0 +1,13 @@
+matplotlib
+seaborn
+pandas
+firebase_admin
+datetime
+nltk
+tensorflow
+tensorflow_hub
+numpy
+scikit-learn
+flask
+flask_cors
+selenium

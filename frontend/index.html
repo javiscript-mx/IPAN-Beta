@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="ipan.ico" type="image/x-icon" />
+    <title>IPAN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="My personal page, here you can find interesting things about how I survive this live."
+    />
+    <meta
+      name="keywords"
+      content="Javiscript.mx, javiscript, javiscriptmx, Javier CA, Javier, Javier Correa"
+    />
+    <meta name="author" content="Francisco Javier Correa Amezcua" />
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content="IPAN / Intelligent Patent analyzer" />
+    <meta property="og:site_name" content="javiscript.mx" />
+    <meta property="og:description" content="IPAN" />
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="dist/semantic.min.css" />
+    <!-- <link rel="stylesheet" href="css/style.css" /> -->
+    <!-- jQuery -->
+    <script src="js/jquery.min.js"></script>
+    <!-- Theme JS -->
+    <script src="dist/semantic.min.js"></script>
+    <!-- Agrega el siguiente enlace para cargar la librería de Google Charts -->
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <!-- Agregar la logica que desarrollamos de la pagina -->
+    <script src="js/main.js"></script>
+  </head>
+  <body>
+    <!-- Menú similar al footer agregado aquí -->
+    <div class="ui fixed inverted menu">
+      <div class="ui container">
+        <a href="#" class="header item">
+          <img class="logo" src="ipan.png" />
+          IPAN
+        </a>
+        <a href="" class="item">Buscador</a>
+        <a href="https://github.com/javiscript-mx/ipan/tree/main" class="item"
+          >Codigo</a
+        >
+        <a href="#" class="item">Investigación</a>
+      </div>
+    </div>
+    <div
+      class="ui centered grid container"
+      style="padding-bottom: 10% !important; padding-top: 10% !important"
+    >
+      <!-- Código del form de búsqueda -->
+      <div class="ui sixteen wide column grid">
+        <img src="logo.png" alt="Logo" class="ui centered medium image" />
+        <h2 class="ui center aligned header">
+          Intelligent Patent Analyzer - Beta Version
+        </h2>
+        <div class="ui twelve wide centered column">
+          <p style="text-align: center">
+            Descubre IPAN, la herramienta inteligente que te permite explorar el
+            vasto mundo de las patentes en Patentscope con facilidad. Utilizando
+            técnicas de inteligencia artificial, IPAN procesa los resultados de
+            búsqueda para identificar las 20 patentes más relevantes,
+            ahorrándote tiempo y proporcionándote información valiosa para tu
+            investigación. Simplifica tu búsqueda de patentes con esta
+            herramienta y toma decisiones informadas de manera rápida y
+            eficiente.
+          </p>
+        </div>
+        <div class="ui grid">
+          <div class="ui two wide column"></div>
+          <div class="ui twelve wide column">
+            <div class="ui fluid action input">
+              <input
+                type="text"
+                id="query"
+                placeholder="Ingrese su consulta de patentes"
+              />
+              <button class="ui primary button" onclick="buscarPatentes()">
+                Buscar
+              </button>
+            </div>
+            <div class="ui indicating progress" id="progressBar">
+              <div class="bar"></div>
+              <div class="label">
+                Buscando, esto puede tardar unos minutos...
+              </div>
+            </div>
+            <div class="ui negative message" id="errorMessage">
+              <i class="close icon" id="closemessage"></i>
+              <div class="header">
+                Lo sentimos, no encontramos resultados para procesar, prueba con
+                otra consulta.
+              </div>
+              <p>
+                Es probable que esa consulta no funcione en patentscope o este
+                relacionada a un único registro de patente.
+              </p>
+            </div>
+          </div>
+          <div class="ui two wide column"></div>
+        </div>
+      </div>
+
+      <!-- Codigo del analisis del resultado de la busqueda -->
+      <div class="ui sixteen wide column" id="resultadoBusqueda">
+        <div class="ui top attached tabular menu" id="#menuResultados">
+          <a class="active item" data-tab="first">Análisis</a>
+          <a class="item" data-tab="second">Recomendaciones (TensorFlow)</a>
+          <a class="item" data-tab="third">Recomendaciones (Neighbors)</a>
+        </div>
+        <!-- Analisis -->
+        <div
+          class="ui bottom attached active tab segment grid"
+          data-tab="first"
+        >
+          <div class="ui twelve wide centered column infoMessage">
+            <div class="ui message">
+              <div class="header">Bienvenido a IPAN</div>
+              <ul class="list">
+                <li>
+                  Para comenzar, ingresa una consulta en el buscador de patentes
+                  y da click en buscar.
+                </li>
+                <li>
+                  Para encontrar mejores resultados prueba con búsquedas en
+                  ingles.
+                </li>
+                <li>Utilízalo con responsabilidad.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="ui centered sixteen wide column analiticsData">
+            <h4>Datos Relevantes</h4>
+            <div class="ui centered statistics">
+              <div class="statistic">
+                <div class="value" id="totalPublicaciones">0</div>
+                <div class="label">Publicaciones</div>
+              </div>
+              <div class="statistic">
+                <div class="value" id="paisesUnicos">0</div>
+                <div class="label">Países</div>
+              </div>
+              <div class="statistic">
+                <div class="value" id="totalAplicaciones">0</div>
+                <div class="label">Solicitudes</div>
+              </div>
+            </div>
+          </div>
+          <div class="ui centered sixteen wide column analiticsData">
+            <h4>Análisis de Fechas de Patentes</h4>
+            <div id="fechasPublicacionChart"></div>
+          </div>
+          <div class="ui centered sixteen wide column analiticsData">
+            <div id="fechasSolicitudChart"></div>
+          </div>
+          <div class="ui centered sixteen wide column analiticsData">
+            <h4>Análisis de Patentes</h4>
+            <div class="ui three column grid">
+              <div class="ui centered column">
+                <div id="patentesPorPais"></div>
+              </div>
+              <div class="ui centered column">
+                <div id="palabrasClaveTitulos"></div>
+              </div>
+              <div class="ui centered column">
+                <div id="palabrasClaveResumen"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="second">
+          <h2 class="ui header">
+            Patentes recomendadas potencialmente relacionadas con tu busqueda
+            usando algoritmo de TensorFlow
+          </h2>
+          <p>
+            Este código utiliza el modelo Universal Sentence Encoder (USE) para
+            convertir tanto la consulta como el resumen de cada patente en
+            vectores de alta dimensionalidad. Luego, calcula la similitud coseno
+            entre el vector de la consulta y el vector de cada resumen de
+            patente para determinar su similitud. Las patentes se ordenan por
+            similitud descendente y se devuelven las mejores coincidencias.
+          </p>
+          <div class="ui twelve wide centered column infoMessage">
+            <div class="ui message">
+              <div class="header">Bienvenido a IPAN</div>
+              <ul class="list">
+                <li>
+                  Para comenzar, ingresa una consulta en el buscador de patentes
+                  y da click en buscar.
+                </li>
+                <li>
+                  Para encontrar mejores resultados prueba con búsquedas en
+                  ingles.
+                </li>
+                <li>Utilízalo con responsabilidad.</li>
+              </ul>
+            </div>
+          </div>
+          <table id="table" class="ui celled table analiticsData">
+            <thead>
+              <tr>
+                <th>Titulo</th>
+                <th>Resumen</th>
+                <th>Inventores</th>
+                <th>País</th>
+                <th>Fecha de publicación</th>
+                <th>Similaridad</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr>
+                <th colspan="2">
+                  Visualizando
+                  <select
+                    id="recordsPerPage"
+                    class="ui mini selection dropdown"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                  </select>
+                  &NonBreakingSpace; registros de
+                  <b id="totalRegistros">20</b>
+                </th>
+                <th colspan="5">
+                  <div
+                    id="pagination"
+                    class="ui right floated pagination menu"
+                  ></div>
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="third">
+          <h2 class="ui header">
+            Patentes recomendadas potencialmente relacionadas con tu búsqueda
+            usando algoritmo de NearestNeighbors
+          </h2>
+          <p>
+            En este código, utilizamos TfidfVectorizer de scikit-learn para
+            convertir el título y el resumen de cada patente en vectores TF-IDF.
+            Luego, utilizamos NearestNeighbors para encontrar los vecinos más
+            cercanos en función de estas características.
+          </p>
+          <div class="ui twelve wide centered column infoMessage">
+            <div class="ui message">
+              <div class="header">Bienvenido a IPAN</div>
+              <ul class="list">
+                <li>
+                  Para comenzar, ingresa una consulta en el buscador de patentes
+                  y da click en buscar.
+                </li>
+                <li>
+                  Para encontrar mejores resultados prueba con búsquedas en
+                  ingles.
+                </li>
+                <li>Utilízalo con responsabilidad.</li>
+              </ul>
+            </div>
+          </div>
+          <table id="table2" class="ui celled table analiticsData">
+            <thead>
+              <tr>
+                <th>Titulo</th>
+                <th>Resumen</th>
+                <th>Inventores</th>
+                <th>País</th>
+                <th>Fecha de publicación</th>
+                <th>Similaridad</th>
+                <th>Similaridad</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr>
+                <th colspan="2">
+                  Visualizando
+                  <select
+                    id="recordsPerPage2"
+                    class="ui mini selection dropdown"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                  </select>
+                  &NonBreakingSpace; registros de
+                  <b id="totalRegistros">20</b>
+                </th>
+                <th colspan="5">
+                  <div
+                    id="pagination2"
+                    class="ui right floated pagination menu"
+                  ></div>
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      class="ui inverted vertical footer segment"
+      style="
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        margin-top: 10%;
+        z-index: 200;
+      "
+    >
+      <div class="ui grid container">
+        <div class="ui two wide column"></div>
+        <div class="ui three wide column right aligned">
+          <img src="unir_logo2.svg" alt="UNIR Logo" class="ui small image" />
+        </div>
+        <div class="ui nine wide centered column">
+          <p>
+            Proyecto de Seminario de Innovación en Inteligencia Artificial |
+            UNIR Mexico. <br />
+            Desarrollo del Equipo 17
+          </p>
+        </div>
+        <div class="ui two wide column"></div>
+      </div>
+    </footer>
+    <script>
+      $('#closemessage').on('click', function () {
+        $(this).closest('.message').transition('fade')
+        $(this).hide()
+      })
+    </script>
+  </body>
+</html>
